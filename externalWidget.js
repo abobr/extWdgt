@@ -7,7 +7,7 @@ define([], function () {
         return true;
       },
       init: function(){
-        console.log('init--------ext');
+        console.log('init--------ext---------2');
         return true;
       },
       bind_actions: function(){
