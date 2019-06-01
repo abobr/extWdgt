@@ -1,4 +1,5 @@
 define([], function (config) {
+  //new comment
   var CustomWidget = function (config) {
 		var self = this;
 
