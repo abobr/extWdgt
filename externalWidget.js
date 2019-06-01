@@ -1,7 +1,8 @@
 define([], function (config) {
-  //v2 here
-  var CustomWidget = function (config) {
-		var self = this;
+  //v3 here
+  var CustomWidget = function (widget) {
+    var self = widget;
+    var config = widget.config;
 
 		this.callbacks = {
 			render: function () {
@@ -39,14 +40,7 @@ define([], function (config) {
 				})
 				return true;
 			},
-			settings: function () {
-				return true;
-			},
-			onSave: function () { return true; },
-			destroy: function () { },
-			contacts: { selected: function () { } },
-			leads: { selected: function () { } },
-			tasks: { selected: function () { } }
+			
 		};
 		return this;
 	};
