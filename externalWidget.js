@@ -1,4 +1,5 @@
 define([], function (config) {
+  //v2 here
   var CustomWidget = function (config) {
 		var self = this;
 
