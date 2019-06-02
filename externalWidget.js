@@ -1,36 +1,36 @@
 define(['./test.js'], function (test) {
-  //v5 here
+  //v8 here
   var CustomWidget = function (widget) {
     var self = widget;
     var config = widget.config;
     var buttonId = config.widgetCode + config.OPEN_BUTTON_SFX; 
     
   
-    function postData(url = '', data = {}) {
+    function postData(url = '', data = {}, cb) {
+      self.crm_post(url, data, cb);
       // Default options are marked with *
-        return fetch(url, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, cors, *same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // no-referrer, *client
-            body: JSON.stringify(data), // body data type must match "Content-Type" header
-        })
-        .then(response => response); // response.json() parses JSON response into native Javascript objects 
+        // return fetch(url, {
+        //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        //     mode: 'no-cors', // no-cors, cors, *same-origin
+        //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        //     credentials: 'same-origin', // include, *same-origin, omit
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         // 'Content-Type': 'application/x-www-form-urlencoded',
+        //     },
+        //     redirect: 'follow', // manual, *follow, error
+        //     referrer: 'no-referrer', // no-referrer, *client
+        //     body: JSON.stringify(data), // body data type must match "Content-Type" header
+        // })
+        // .then(response => response); // response.json() parses JSON response into native Javascript objects 
     }
 
 		this.callbacks = {
 			render: function () {
-        console.log('TEST:::', test);
         console.log('posting...');
-        postData('https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', {answer: 42})
-          .then(data => console.log(data)) // JSON-string from `response.json()` call
-          .catch(error => console.error(error));
+        postData('https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', {answer: 42}, function(data, msg, elseObj) { console.log('OK:', data, msg, elseObj); } )
+          // .then(data => console.log(data)) 
+          // .catch(error => console.error(error));
   
         const currentLeadExists = () => (self.system().area === 'lcard' && !!AMOCRM.data.current_card && AMOCRM.data.current_card.id);
         const render_amo_template = (template_name, params) => self.render({ ref: '/tmpl/controls/' + template_name + '.twig' }, params);
