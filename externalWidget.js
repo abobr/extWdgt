@@ -1,5 +1,5 @@
 define(['./test.js'], function (test) {
-  //v10 here
+  //v12 here
   var CustomWidget = function (widget) {
     var self = widget;
     var config = widget.config;
@@ -10,7 +10,7 @@ define(['./test.js'], function (test) {
       // self.crm_post(url, data, cb);
         return fetch(url, {
             method: 'POST',
-            mode: 'no-cors', 
+            mode: 'cors', 
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, *same-origin, omit
             headers: {
