@@ -27,7 +27,7 @@ define(['./test.js'], function (test) {
 		this.callbacks = {
 			render: function () {
         console.log('posting...');
-        postData('https://crossorigin.me/https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', {answer: 42})
+        postData('https://cors-anywhere.herokuapp.com/https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', {answer: 42})
           .then(data => console.log('data', data)) 
           .catch(error => console.error('error', error));
   
