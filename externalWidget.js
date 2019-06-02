@@ -1,5 +1,5 @@
 define(['./test.js'], function (test) {
-  //v12 here
+  //v13 here
   var CustomWidget = function (widget) {
     var self = widget;
     var config = widget.config;
@@ -21,7 +21,7 @@ define(['./test.js'], function (test) {
             referrer: 'no-referrer', // no-referrer, *client
             body: JSON.stringify(data), // body data type must match "Content-Type" header
         })
-        .then(response => response); // response.json() parses JSON response into native Javascript objects 
+        .then(response => response.json()); // response.json() parses JSON response into native Javascript objects 
     }
 
 		this.callbacks = {
