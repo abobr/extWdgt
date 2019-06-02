@@ -1,5 +1,5 @@
 define(['./test.js'], function (test) {
-  //v9 here
+  //v10 here
   var CustomWidget = function (widget) {
     var self = widget;
     var config = widget.config;
@@ -15,6 +15,7 @@ define(['./test.js'], function (test) {
             credentials: 'same-origin', // include, *same-origin, omit
             headers: {
                 'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             },
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // no-referrer, *client
