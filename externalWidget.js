@@ -3,10 +3,11 @@ define(['./test.js'], function (test) {
   var CustomWidget = function (widget) {
     var self = widget;
     var config = widget.config;
-    var buttonId = config.widgetCode + config.OPEN_BUTTON_SFX; 
+    var widgetCode = self.get_settings().widget_code;
+    var buttonId = widgetCode + config.OPEN_BUTTON_SFX; 
     
   
-    function postData(url = '', data = {}) {
+    async function postData(url = '', data = {}) {
       // self.crm_post(url, data, cb);
         return fetch(url, {
             method: 'POST',
@@ -26,10 +27,8 @@ define(['./test.js'], function (test) {
 
 		this.callbacks = {
 			render: function () {
-        console.log('posting...');
-        postData('https://cors-anywhere.herokuapp.com/https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', {answer: 42})
-          .then(data => console.log('data', data)) 
-          .catch(error => console.error('error', error));
+        // .then(data => console.log('data', data)) 
+          // .catch(error => console.error('error', error));
   
         const currentLeadExists = () => (self.system().area === 'lcard' && !!AMOCRM.data.current_card && AMOCRM.data.current_card.id);
         const render_amo_template = (template_name, params) => self.render({ ref: '/tmpl/controls/' + template_name + '.twig' }, params);
@@ -37,11 +36,11 @@ define(['./test.js'], function (test) {
 				if (currentLeadExists()) {
 					const data = render_amo_template('button', {
 						text: 'Открыть',
-						class_name: config.widgetCode.replace(/_/g, '-') + config.OPEN_BUTTON_SFX,
+						class_name: widgetCode.replace(/_/g, '-') + config.OPEN_BUTTON_SFX,
 						id: buttonId
 					})
 					self.render_template({
-						caption: { class_name: config.widgetCode.replace(/_/g, '-') + config.WIDGET_CAPTION_SFX	},
+						caption: { class_name: widgetCode.replace(/_/g, '-') + config.WIDGET_CAPTION_SFX	},
 						body: data,
 						render: ''
 					})
@@ -52,10 +51,14 @@ define(['./test.js'], function (test) {
 			
 			bind_actions: function () {
 				var data = '<iframe style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" src="' + config.address + '"></iframe>';
-				$('#' + buttonId).on('click', function () {
-					var h = document.documentElement.clientHeight - 60 - 48;
-					var w = document.documentElement.clientWidth - 60 - 24;
-					config.create_modal(data, w, h);
+				$('#' + buttonId).on('click', async function () {
+          console.log('posting...');
+          var data = await postData('https://cors-anywhere.herokuapp.com/https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', {answer: 42})
+          console.log('data::', data)  
+  
+					// var h = document.documentElement.clientHeight - 60 - 48;
+					// var w = document.documentElement.clientWidth - 60 - 24;
+					// config.create_modal(data, w, h);
 				})
 				return true;
       },
