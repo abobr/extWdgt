@@ -21,7 +21,7 @@ define(['./test.js'], function (test) {
             referrer: 'no-referrer', // no-referrer, *client
             body: JSON.stringify(data), // body data type must match "Content-Type" header
         })
-        .then(response => response.json()); // parses JSON response into native Javascript objects 
+        .then(response => response); // response.json() parses JSON response into native Javascript objects 
     }
 
 		this.callbacks = {
@@ -29,7 +29,7 @@ define(['./test.js'], function (test) {
         console.log('TEST:::', test);
         console.log('posting...');
         postData('https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', {answer: 42})
-          .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
+          .then(data => console.log(data)) // JSON-string from `response.json()` call
           .catch(error => console.error(error));
   
         const currentLeadExists = () => (self.system().area === 'lcard' && !!AMOCRM.data.current_card && AMOCRM.data.current_card.id);
