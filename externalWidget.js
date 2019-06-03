@@ -7,22 +7,26 @@ define([], function () {
         var buttonId = widgetCode + config.OPEN_BUTTON_SFX;
 
 
-        async function postData(url = '', data = {}) {
+        async function postData(url = '', data = {}, headers) {
             // self.crm_post(url, data, cb);
             return fetch(url, {
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                 credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
+                headers: Object.assign({
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
-                },
+                }, headers),
                 redirect: 'follow', // manual, *follow, error
                 referrer: 'no-referrer', // no-referrer, *client
                 body: JSON.stringify(data), // body data type must match "Content-Type" header
             })
-                .then(response => response.json()); // response.json() parses JSON response into native Javascript objects 
+            .then(response => {
+                return response.status; 
+                // if(response.status == 200) return 200;
+                // return {status: response.status};                 
+            }); // response.json() parses JSON response into native Javascript objects 
         }
 
         async function getData(url) {
@@ -112,9 +116,9 @@ define([], function () {
                 var data = '<iframe style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" src="' + config.address + '"></iframe>';
                 $('#' + buttonId).on('click', async function () {
                     var current_lead_id = AMOCRM.data.current_card.id;
-                    console.log('posting...');
-                    var data = await postData('https://cors-anywhere.herokuapp.com/https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', { answer: 42 })
-                    console.log('data::', data);
+                    // console.log('posting...');
+                    // var data = await postData('https://cors-anywhere.herokuapp.com/https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', { answer: 42 })
+                    // console.log('data::', data);
                     var lead_info = await getData('/api/v2/leads?id=' + current_lead_id);
                     if(lead_info){
                         const li = lead_info._embedded.items[0];
@@ -132,6 +136,12 @@ define([], function () {
 
                         const contactsJSON = getContactsJSON(contactsInfo);
                         const companyJSON = getCompanyJSON(companyInfo);
+
+                        if(!companyJSON.some(c=>c.custom_fields.length > 0) && !contactsJSON.some(c=>c.custom_fields.length > 0)){
+                            alert('Необходимо, чтобы хотя бы у одного из контактов/компаний был указан ИНН/КПП');
+                            return true;
+                        }
+
                         const resJSON = {
                             current_user: self.system().amouser_id,
                             lead: {
@@ -142,10 +152,15 @@ define([], function () {
                             companies: companyJSON
                         }
                         console.log('result:', resJSON);
+                        const res = await postData(config.api, resJSON, {[config.credentials.name]: config.credentials.value});
+                        if(parseInt(res) !== 200){
+                            alert('Произошла ошибка при обращении к серверу 1с, попробуйте повторить попытку позже.');
+                            return true;
+                        }
                     }
-                    // var h = document.documentElement.clientHeight - 60 - 48;
-                    // var w = document.documentElement.clientWidth - 60 - 24;
-                    // config.create_modal(data, w, h);
+                    var h = document.documentElement.clientHeight - 60 - 48;
+                    var w = document.documentElement.clientWidth - 60 - 24;
+                    config.create_modal(data, w, h);
                 })
                 return true;
             },
