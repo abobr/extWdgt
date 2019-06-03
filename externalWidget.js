@@ -43,7 +43,7 @@ define([], function () {
 
         async function getCompanyInfo(lead_info){
             return (lead_info.company && lead_info.company._links && lead_info.company._links.self.href) 
-            ? getData(lead_info.contacts._links.self.href) 
+            ? getData(lead_info.company._links.self.href) 
             : null;
         }
 
