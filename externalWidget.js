@@ -1,5 +1,5 @@
-define(['./test.js'], function (test) {
-    //v15 here
+define([], function () {
+    //v16 here
     var CustomWidget = function (widget) {
         var self = widget;
         var config = widget.config;
@@ -23,6 +23,28 @@ define(['./test.js'], function (test) {
                 body: JSON.stringify(data), // body data type must match "Content-Type" header
             })
                 .then(response => response.json()); // response.json() parses JSON response into native Javascript objects 
+        }
+
+        async function getData(url) {
+            return fetch(url, {
+                method: 'GET',
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            }).then(response => { 
+                if(response.status == 200) return response.json();
+                return null; 
+            });
+        }
+
+        async function getContactInfo(lead_info){
+            return (lead_info.contacts && lead_info.contacts._links && lead_info.contacts._links.self.href) 
+            ? getData(lead_info.contacts._links.self.href) 
+            : null;
+        }
+
+        async function getCompanyInfo(lead_info){
+            return (lead_info.company && lead_info.company._links && lead_info.company._links.self.href) 
+            ? getData(lead_info.contacts._links.self.href) 
+            : null;
         }
 
         this.callbacks = {
@@ -56,13 +78,21 @@ define(['./test.js'], function (test) {
                     console.log('posting...');
                     var data = await postData('https://cors-anywhere.herokuapp.com/https://webhook.site/6e9d2ff1-12d8-4034-b443-020efbf213ae', { answer: 42 })
                     console.log('data::', data);
-                    var lead_info = await fetch('/api/v2/leads?id=' + current_lead_id, {
-                        method: 'GET',
-                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                    }).then(response => response.json());
-                    console.log('lead_info::', lead_info);    
-
-
+                    var lead_info = await getData('/api/v2/leads?id=' + current_lead_id);
+                    if(lead_info){
+                        const li = lead_info._embedded.items[0];
+                        console.log('lead_info::', li);
+                        var companyInfo = await getCompanyInfo(li);
+                        var contactsInfo = await getContactInfo(li);
+                           
+                        if(!companyInfo && !contactsInfo){
+                            alert('Необходимо добавить хотя бы один контакт/компанию к сделке');
+                            return true;
+                        } 
+                        
+                        console.log('contacts:', contactsInfo);
+                        console.log('company:', companyInfo);
+                    }
                     // var h = document.documentElement.clientHeight - 60 - 48;
                     // var w = document.documentElement.clientWidth - 60 - 24;
                     // config.create_modal(data, w, h);
