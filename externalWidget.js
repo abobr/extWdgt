@@ -76,7 +76,7 @@ define([], function () {
             if(company && company._embedded && company._embedded.items){
                 return company._embedded.items.map(company => {
                     return {
-                        id: contact.id,
+                        id: company.id,
                         custom_fields: getCustomFieldsByNames(company, ["ИНН", "КПП"], { "ИНН": "COMPANY_INN", "КПП": "COMPANY_KPP"})
                     }
                 })
