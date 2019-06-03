@@ -11,7 +11,7 @@ define([], function () {
             // self.crm_post(url, data, cb);
             return fetch(url, {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'cors',
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                 credentials: 'include', // include, *same-origin, omit
                 headers: Object.assign({
