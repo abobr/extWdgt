@@ -26,6 +26,10 @@ define([], function () {
                 return response.status; 
                 // if(response.status == 200) return 200;
                 // return {status: response.status};                 
+            })
+            .catch(err => {
+                console.log('err', err);
+                return err;
             }); // response.json() parses JSON response into native Javascript objects 
         }
 
