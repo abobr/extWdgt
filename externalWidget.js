@@ -56,7 +56,7 @@ define([], function () {
         }
 
         function getCustomFieldsByNames(entity, names, codes) {
-            if(entity.custom_fields) {
+            if(entity.custom_fields && entity.custom_fields.length > 0) {
                 return entity.custom_fields.filter(f => names.includes(f.name)).map(f => 
                     ({
                         name: f.name,
@@ -69,7 +69,7 @@ define([], function () {
         }
 
         function getContactsJSON(contacts) {
-            if(contacts && contacts._embedded && contacts._embedded.items){
+            if(contacts && contacts._embedded && contacts._embedded.items && contacts._embedded.items.length > 0){
                 return contacts._embedded.items.map(contact => {
                     return {
                         id: contact.id,
@@ -81,7 +81,7 @@ define([], function () {
         }
 
         function getCompanyJSON(company) {
-            if(company && company._embedded && company._embedded.items){
+            if(company && company._embedded && company._embedded.items && company._embedded.items.length > 0){
                 return company._embedded.items.map(company => {
                     return {
                         id: company.id,
