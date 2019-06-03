@@ -11,9 +11,9 @@ define([], function () {
             // self.crm_post(url, data, cb);
             return fetch(url, {
                 method: 'POST',
-                mode: 'cors',
+                mode: 'no-cors',
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
+                credentials: 'include', // include, *same-origin, omit
                 headers: Object.assign({
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
@@ -157,7 +157,7 @@ define([], function () {
                         }
                         console.log('result:', resJSON);
                         const res = await postData(config.api, resJSON, {[config.credentials.name]: config.credentials.value});
-                        if(parseInt(res) !== 200){
+                        if(parseInt(res) !== 200 && parseInt(res) !== 204){
                             alert('Произошла ошибка при обращении к серверу 1с, попробуйте повторить попытку позже.');
                             return true;
                         }
