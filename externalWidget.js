@@ -147,7 +147,7 @@ define([], function () {
                         }
 
                         const resJSON = {
-                            current_user: self.system().amouser_id,
+                            current_user: parseInt(self.system().amouser_id),
                             lead: {
                                 id: li.id, //AMOCRM.data.current_card.id - 1799809
                                 responsible_user_id: li.responsible_user_id, // AMOCRM.data.current_card.main_user
