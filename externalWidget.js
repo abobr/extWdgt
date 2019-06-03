@@ -1,5 +1,5 @@
 define([], function () {
-    //v16 here
+    //v18 here
     var CustomWidget = function (widget) {
         var self = widget;
         var config = widget.config;
@@ -47,6 +47,43 @@ define([], function () {
             : null;
         }
 
+        function getCustomFieldsByNames(entity, names, codes) {
+            if(entity.custom_fields) {
+                return entity.custom_fields.filter(f => names.includes(f.name)).map(f => 
+                    ({
+                        name: f.name,
+                        code: f.code || codes[f.name] || 'UNKNOWN_CODE',
+                        values: f.values 
+                    })
+                );
+            }
+            return [];
+        }
+
+        function getContactsJSON(contacts) {
+            if(contacts && contacts._embedded && contacts._embedded.items){
+                return contacts._embedded.items.map(contact => {
+                    return {
+                        id: contact.id,
+                        custom_fields: getCustomFieldsByNames(contact, ["ИНН", "КПП"], { "ИНН": "CONTACT_INN", "КПП": "CONTACT_KPP"})
+                    }
+                })
+            }
+            return [];
+        }
+
+        function getCompanyJSON(company) {
+            if(company && company._embedded && company._embedded.items){
+                return company._embedded.items.map(company => {
+                    return {
+                        id: contact.id,
+                        custom_fields: getCustomFieldsByNames(company, ["ИНН", "КПП"], { "ИНН": "COMPANY_INN", "КПП": "COMPANY_KPP"})
+                    }
+                })
+            }
+            return [];
+        }
+
         this.callbacks = {
             render: function () {
                 // .then(data => console.log('data', data)) 
@@ -92,6 +129,19 @@ define([], function () {
                         
                         console.log('contacts:', contactsInfo);
                         console.log('company:', companyInfo);
+
+                        const contactsJSON = getContactsJSON(contactsInfo);
+                        const companyJSON = getCompanyJSON(companyInfo);
+                        const resJSON = {
+                            current_user: self.system().amouser_id,
+                            lead: {
+                                id: li.id, //AMOCRM.data.current_card.id - 1799809
+                                responsible_user_id: li.responsible_user_id, // AMOCRM.data.current_card.main_user
+                            },
+                            contacts: contactsJSON,
+                            companies: companyJSON
+                        }
+                        console.log('result:', resJSON);
                     }
                     // var h = document.documentElement.clientHeight - 60 - 48;
                     // var w = document.documentElement.clientWidth - 60 - 24;
